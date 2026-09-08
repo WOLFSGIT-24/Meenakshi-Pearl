@@ -1,0 +1,51 @@
+---
+import { Head } from "@/components/Head";
+import AppRouter from "@/components/Router";
+import "@/styles/global.css";
+
+export function getStaticPaths() {
+  return [
+    { params: { slug: undefined } },
+    { params: { slug: 'privacy-policy' } },
+    { params: { slug: '404' } },
+  ];
+}
+
+const title = "Meenakshi Pearl | Luxury Plotted Community in East Bangalore";
+const description = "Discover Meenakshi Pearl - 212 premium, 100% Vastu-compliant villa plots spanning 14 lush acres in East Bangalore. Featuring a grand clubhouse, ready infrastructure, and MPA approvals.";
+const siteUrl = Astro.url.href;
+const ogImage = "https://static.wixstatic.com/media/cef78c_c6d8a435aea5404b8ab01167c045f18b~mv2.png";
+---
+
+<!doctype html>
+<html lang="en" class="w-full h-full scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="Meenakshi Pearl, luxury plots Bangalore, villa plots East Bangalore, plotted development, real estate Bangalore, MPA approved plots, investment plots" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={siteUrl} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImage} />
+
+    <Head />
+  </head>
+  <body class="w-full h-full bg-old-lace text-soft-charcoal antialiased">
+    <div id="root" class="w-full h-full">
+      <AppRouter client:only="react" />
+    </div>
+  </body>
+</html>
