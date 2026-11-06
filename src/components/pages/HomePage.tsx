@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { BaseCrudService } from '@/integrations';
+import { submitLead } from '@/lib/submitLead';
 import {
   GatedLivingBenefits,
   InfrastructureDetails,
@@ -193,7 +194,7 @@ const HeroSection = ({ onOpenContactForm }: { onOpenContactForm: () => void }) =
               <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight text-soft-charcoal mb-4 sm:mb-6">
                 Exclusive <span className="text-primary whitespace-nowrap">30x50</span> Plots
                 <br />
-                Starting at <span className="text-primary whitespace-nowrap">₹45 Lakhs</span>
+                Starting at <span className="text-primary whitespace-nowrap">₹48 Lakhs</span>
               </h1>
             </CinematicReveal>
 
@@ -1141,7 +1142,7 @@ const InvestmentSection = ({ investmentHighlights, onOpenContactForm }: { invest
               {[
                 { value: "25%+", label: "Expected Appreciation", sublabel: "in 3-5 years" },
                 { value: "100%", label: "Clear Title", sublabel: "Legal Compliance" },
-                { value: "₹45L", label: "Starting Price", sublabel: "Premium Plots" }
+                { value: "₹48L", label: "Starting Price", sublabel: "Premium Plots" }
               ].map((stat, i) => (
                 <motion.div 
                   key={i}
@@ -1241,12 +1242,10 @@ const FinalCTASection = ({ onOpenContactForm }: { onOpenContactForm: () => void 
     setIsSubmitting(true);
 
     try {
-      await BaseCrudService.create('contactformsubmissions', {
-        _id: crypto.randomUUID(),
+      await submitLead({
         name: formData.name,
         phoneNumber: formData.phoneNumber,
         email: formData.email,
-        submissionDate: new Date(),
       });
 
       setSubmitSuccess(true);

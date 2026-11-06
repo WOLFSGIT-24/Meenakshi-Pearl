@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import { BaseCrudService } from '@/integrations';
+import { submitLead } from '@/lib/submitLead';
 
 interface ContactFormModalProps {
   isOpen: boolean;
@@ -55,12 +55,10 @@ export default function ContactFormModal({ isOpen, onClose }: ContactFormModalPr
     setIsSubmitting(true);
 
     try {
-      await BaseCrudService.create('contactformsubmissions', {
-        _id: crypto.randomUUID(),
+      await submitLead({
         name: formData.name,
         phoneNumber: formData.phoneNumber,
         email: formData.email,
-        submissionDate: new Date(),
       });
 
       setSubmitSuccess(true);
