@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import { submitLead } from '@/lib/submitLead';
+import { submitLead, NAME_PATTERN, PHONE_PATTERN, EMAIL_PATTERN } from '@/lib/submitLead';
 
 interface ContactFormModalProps {
   isOpen: boolean;
@@ -16,6 +16,7 @@ export default function ContactFormModal({ isOpen, onClose }: ContactFormModalPr
     email: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const isEnglishOnly = (text: string): boolean => {
@@ -53,6 +54,7 @@ export default function ContactFormModal({ isOpen, onClose }: ContactFormModalPr
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError('');
 
     try {
       await submitLead({
@@ -71,6 +73,7 @@ export default function ContactFormModal({ isOpen, onClose }: ContactFormModalPr
       }, 2000);
     } catch (error) {
       console.error('Failed to submit form:', error);
+      setSubmitError('Could not send your details. Please check them and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -140,6 +143,10 @@ export default function ContactFormModal({ isOpen, onClose }: ContactFormModalPr
                         value={formData.name}
                         onChange={handleChange}
                         required
+                        pattern={NAME_PATTERN}
+                        maxLength={60}
+                        autoComplete="name"
+                        title="Letters only, at least 2 characters"
                         className="w-full bg-foreground/15 border border-foreground/30 rounded-lg px-3 sm:px-4 py-2 sm:py-3 font-paragraph text-sm sm:text-base text-warm-espresso placeholder-foreground/50 focus:outline-none focus:border-primary focus:bg-foreground/20 transition-all"
                         placeholder="Your name"
                       />
@@ -156,6 +163,10 @@ export default function ContactFormModal({ isOpen, onClose }: ContactFormModalPr
                         value={formData.phoneNumber}
                         onChange={handleChange}
                         required
+                        pattern={PHONE_PATTERN}
+                        maxLength={20}
+                        autoComplete="tel"
+                        title="Enter a valid 10-digit mobile number, or include your country code (e.g. +1 555 123 4567)"
                         className="w-full bg-foreground/15 border border-foreground/30 rounded-lg px-3 sm:px-4 py-2 sm:py-3 font-paragraph text-sm sm:text-base text-warm-espresso placeholder-foreground/50 focus:outline-none focus:border-primary focus:bg-foreground/20 transition-all"
                         placeholder="+91 XXXXX XXXXX"
                       />
@@ -172,6 +183,10 @@ export default function ContactFormModal({ isOpen, onClose }: ContactFormModalPr
                         value={formData.email}
                         onChange={handleChange}
                         required
+                        pattern={EMAIL_PATTERN}
+                        maxLength={100}
+                        autoComplete="email"
+                        title="Enter a valid email address, e.g. name@example.com"
                         className="w-full bg-foreground/15 border border-foreground/30 rounded-lg px-3 sm:px-4 py-2 sm:py-3 font-paragraph text-sm sm:text-base text-warm-espresso placeholder-foreground/50 focus:outline-none focus:border-primary focus:bg-foreground/20 transition-all"
                         placeholder="your@email.com"
                       />
@@ -185,6 +200,9 @@ export default function ContactFormModal({ isOpen, onClose }: ContactFormModalPr
                     >
                       {isSubmitting ? 'Sending...' : 'Send Message'}
                     </Button>
+                    {submitError && (
+                      <p role="alert" className="font-paragraph text-xs sm:text-sm text-red-700 text-center">{submitError}</p>
+                    )}
 
                     <p className="font-paragraph text-xs text-foreground/30 text-center mt-3 sm:mt-4">
                       We respect your privacy. Your information will never be shared.

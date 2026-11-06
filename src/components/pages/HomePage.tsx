@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { BaseCrudService } from '@/integrations';
-import { submitLead } from '@/lib/submitLead';
+import { submitLead, NAME_PATTERN, PHONE_PATTERN, EMAIL_PATTERN } from '@/lib/submitLead';
 import {
   GatedLivingBenefits,
   InfrastructureDetails,
@@ -1203,6 +1203,7 @@ const FinalCTASection = ({ onOpenContactForm }: { onOpenContactForm: () => void 
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState('');
   const [submitSuccess, setSubmitSuccess] = React.useState(false);
 
   const isEnglishOnly = (text: string): boolean => {
@@ -1240,6 +1241,7 @@ const FinalCTASection = ({ onOpenContactForm }: { onOpenContactForm: () => void 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError('');
 
     try {
       await submitLead({
@@ -1257,6 +1259,7 @@ const FinalCTASection = ({ onOpenContactForm }: { onOpenContactForm: () => void 
       }, 3000);
     } catch (error) {
       console.error('Failed to submit form:', error);
+      setSubmitError('Could not send your details. Please check them and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -1312,6 +1315,10 @@ const FinalCTASection = ({ onOpenContactForm }: { onOpenContactForm: () => void 
                       value={formData.name}
                       onChange={handleChange}
                       required
+                      pattern={NAME_PATTERN}
+                      maxLength={60}
+                      autoComplete="name"
+                      title="Letters only, at least 2 characters"
                       className="w-full bg-old-lace border border-primary/20 rounded-lg px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 font-paragraph text-sm sm:text-base text-soft-charcoal placeholder-muted-gray/50 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
                       placeholder="Your name"
                     />
@@ -1328,6 +1335,10 @@ const FinalCTASection = ({ onOpenContactForm }: { onOpenContactForm: () => void 
                       value={formData.phoneNumber}
                       onChange={handleChange}
                       required
+                      pattern={PHONE_PATTERN}
+                      maxLength={20}
+                      autoComplete="tel"
+                      title="Enter a valid 10-digit mobile number, or include your country code (e.g. +1 555 123 4567)"
                       className="w-full bg-old-lace border border-primary/20 rounded-lg px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 font-paragraph text-sm sm:text-base text-soft-charcoal placeholder-muted-gray/50 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
                       placeholder="+91 XXXXX XXXXX"
                     />
@@ -1345,6 +1356,10 @@ const FinalCTASection = ({ onOpenContactForm }: { onOpenContactForm: () => void 
                     value={formData.email}
                     onChange={handleChange}
                     required
+                    pattern={EMAIL_PATTERN}
+                    maxLength={100}
+                    autoComplete="email"
+                    title="Enter a valid email address, e.g. name@example.com"
                     className="w-full bg-old-lace border border-primary/20 rounded-lg px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 font-paragraph text-sm sm:text-base text-soft-charcoal placeholder-muted-gray/50 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10 transition-all"
                     placeholder="your@email.com"
                   />
@@ -1365,6 +1380,9 @@ const FinalCTASection = ({ onOpenContactForm }: { onOpenContactForm: () => void 
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                   </Button>
                 </motion.div>
+                {submitError && (
+                  <p role="alert" className="font-paragraph text-sm text-red-700 text-center">{submitError}</p>
+                )}
 
                 <p className="font-paragraph text-[10px] sm:text-xs md:text-sm text-muted-gray text-center">
                   We respect your privacy. Your information will never be shared.
